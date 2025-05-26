@@ -1,0 +1,116 @@
+@startuml Visitor Pattern
+
+package "ua.bot.behaviour.visitor" {
+    ' Visitor interface and implementations
+    interface "Visitor" {
+        +visitConcreteElementA(element: ConcreteElementA): void
+        +visitConcreteElementB(element: ConcreteElementB): void
+    }
+    
+    class "ConcreteVisitor1" {
+        +visitConcreteElementA(element: ConcreteElementA): void
+        +visitConcreteElementB(element: ConcreteElementB): void
+    }
+    
+    class "ConcreteVisitor2" {
+        +visitConcreteElementA(element: ConcreteElementA): void
+        +visitConcreteElementB(element: ConcreteElementB): void
+    }
+    
+    ' Element interface and implementations
+    interface "Element" {
+        +accept(visitor: Visitor): void
+    }
+    
+    class "ConcreteElementA" {
+        +accept(visitor: Visitor): void
+        +operationA(): String
+    }
+    
+    class "ConcreteElementB" {
+        +accept(visitor: Visitor): void
+        +operationB(): String
+    }
+    
+    ' Object Structure
+    class "ObjectStructure" {
+        -elements: List<Element>
+        +addElement(element: Element): void
+        +removeElement(element: Element): void
+        +accept(visitor: Visitor): void
+    }
+    
+    ' Client
+    class "VisitorPatternDemo" {
+        +main(args: String[]): void
+    }
+    
+    ' Relationships
+    Visitor <|.. ConcreteVisitor1
+    Visitor <|.. ConcreteVisitor2
+    
+    Element <|.. ConcreteElementA
+    Element <|.. ConcreteElementB
+    
+    ObjectStructure o--> "0..*" Element : contains
+    
+    Element ..> Visitor : accept(visitor)
+    ConcreteElementA ..> Visitor : visitor.visitConcreteElementA(this)
+    ConcreteElementB ..> Visitor : visitor.visitConcreteElementB(this)
+    
+    ConcreteVisitor1 ..> ConcreteElementA : uses
+    ConcreteVisitor1 ..> ConcreteElementB : uses
+    ConcreteVisitor2 ..> ConcreteElementA : uses
+    ConcreteVisitor2 ..> ConcreteElementB : uses
+    
+    VisitorPatternDemo ..> ObjectStructure : uses
+    VisitorPatternDemo ..> Visitor : creates
+    VisitorPatternDemo ..> ConcreteElementA : creates
+    VisitorPatternDemo ..> ConcreteElementB : creates
+}
+
+note top of Visitor
+  The Visitor interface declares a set of visiting methods,
+  one for each concrete element class.
+end note
+
+note top of Element
+  The Element interface declares an accept method
+  that takes a visitor as an argument.
+end note
+
+note right of ConcreteElementA
+  ConcreteElementA implements the accept operation
+  by calling the visitor's visitConcreteElementA method.
+end note
+
+note right of ConcreteElementB
+  ConcreteElementB implements the accept operation
+  by calling the visitor's visitConcreteElementB method.
+end note
+
+note bottom of ObjectStructure
+  ObjectStructure maintains a collection of elements
+  and provides a high-level interface to allow visitors
+  to visit its elements.
+end note
+
+note bottom of ua.bot.behaviour.visitor
+  The Visitor Pattern represents an operation to be performed
+  on the elements of an object structure. It lets you define a
+  new operation without changing the classes of the elements on
+  which it operates.
+  
+  Key components:
+  - Visitor: Interface declaring visit methods for each element
+  - ConcreteVisitor: Implements visit methods with specific operations
+  - Element: Interface declaring accept method
+  - ConcreteElement: Implements accept method by calling appropriate visitor method
+  - ObjectStructure: Collection of elements that can be visited
+  
+  The pattern uses "double dispatch" mechanism:
+  1. Element.accept(visitor) calls visitor.visit(this)
+  2. The specific visitor method is determined by both the visitor type and element type
+end note
+
+@enduml

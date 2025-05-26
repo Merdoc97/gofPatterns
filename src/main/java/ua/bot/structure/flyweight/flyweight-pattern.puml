@@ -1,0 +1,52 @@
+@startuml Flyweight Pattern
+
+package "ua.bot.structure.flyweight" {
+    interface "Flyweight" {
+        +operation(extrinsicState: String)
+    }
+    
+    class "ConcreteFlyweight" {
+        -intrinsicState: String
+        +ConcreteFlyweight(intrinsicState: String)
+        +operation(extrinsicState: String)
+    }
+    
+    class "UnsharedConcreteFlyweight" {
+        -allState: String
+        +UnsharedConcreteFlyweight(allState: String)
+        +operation(extrinsicState: String)
+    }
+    
+    class "FlyweightFactory" {
+        -flyweights: Map<String, Flyweight>
+        +FlyweightFactory()
+        +getFlyweight(key: String): Flyweight
+        +getFlyweightCount(): int
+        +createUnsharedFlyweight(state: String): Flyweight
+    }
+    
+    class "FlyweightPatternDemo" {
+        +main(args: String[])
+    }
+    
+    Flyweight <|.. ConcreteFlyweight : implements
+    Flyweight <|.. UnsharedConcreteFlyweight : implements
+    FlyweightFactory o--> Flyweight : creates & manages
+    FlyweightPatternDemo ..> FlyweightFactory : uses
+    FlyweightPatternDemo ..> Flyweight : uses
+}
+
+note bottom of ua.bot.structure.flyweight
+  The Flyweight Pattern minimizes memory usage by sharing as much data as possible with similar objects.
+  
+  Key components:
+  - Flyweight: Interface for flyweight objects that can receive and act on extrinsic state
+  - ConcreteFlyweight: Implements Flyweight, stores intrinsic state that can be shared
+  - UnsharedConcreteFlyweight: Implements Flyweight but doesn't share state
+  - FlyweightFactory: Creates and manages flyweight objects, ensuring sharing when appropriate
+  
+  Intrinsic State: State that is stored in the flyweight and shared among contexts
+  Extrinsic State: State that varies in each context and is passed to the flyweight
+end note
+
+@enduml

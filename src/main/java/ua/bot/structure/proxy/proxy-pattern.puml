@@ -1,0 +1,45 @@
+@startuml Proxy Pattern
+
+package "ua.bot.structure.proxy" {
+    interface "Subject" {
+        +request()
+    }
+    
+    class "RealSubject" {
+        +request()
+    }
+    
+    class "Proxy" {
+        -realSubject: RealSubject
+        +Proxy()
+        +request()
+    }
+    
+    note right of Proxy::request
+      1. Lazy initializes realSubject if null
+      2. Pre-processes the request
+      3. Delegates to realSubject
+      4. Post-processes the request
+    end note
+    
+    class "ProxyPatternDemo" {
+        +main(args: String[])
+    }
+    
+    Subject <|.. RealSubject : implements
+    Subject <|.. Proxy : implements
+    Proxy o--> RealSubject : references
+    ProxyPatternDemo ..> Proxy : uses
+    ProxyPatternDemo ..> RealSubject : uses
+}
+
+note bottom of ua.bot.structure.proxy
+  The Proxy Pattern provides a surrogate or placeholder for another object
+  to control access to it. The pattern has three main components:
+  
+  - Subject: Common interface for RealSubject and Proxy
+  - RealSubject: Defines the real object that the proxy represents
+  - Proxy: Maintains a reference to RealSubject and controls access to it
+end note
+
+@enduml

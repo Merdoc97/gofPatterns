@@ -1,0 +1,148 @@
+@startuml Factory Patterns
+
+package "ua.bot.creation.factory" {
+    ' Common Product interface and implementations
+    interface "Product" {
+        +operation(): void
+        +getName(): String
+    }
+    
+    class "ConcreteProductA" {
+        +operation(): void
+        +getName(): String
+    }
+    
+    class "ConcreteProductB" {
+        +operation(): void
+        +getName(): String
+    }
+    
+    Product <|.. ConcreteProductA
+    Product <|.. ConcreteProductB
+}
+
+package "ua.bot.creation.factory.factorymethod" {
+    ' Factory Method pattern
+    interface "Creator" {
+        +createProduct(): Product
+        +someOperation(): void
+    }
+    
+    class "ConcreteCreatorA" {
+        +createProduct(): Product
+    }
+    
+    class "ConcreteCreatorB" {
+        +createProduct(): Product
+    }
+    
+    class "FactoryMethodDemo" {
+        +main(args: String[]): void
+    }
+    
+    Creator <|.. ConcreteCreatorA
+    Creator <|.. ConcreteCreatorB
+    ConcreteCreatorA ..> ConcreteProductA : creates
+    ConcreteCreatorB ..> ConcreteProductB : creates
+    FactoryMethodDemo ..> Creator : uses
+}
+
+package "ua.bot.creation.factory.abstractfactory" {
+    ' Abstract Factory pattern
+    interface "AbstractFactory" {
+        +createProductA(): ProductA
+        +createProductB(): ProductB
+    }
+    
+    class "ConcreteFactory1" {
+        +createProductA(): ProductA
+        +createProductB(): ProductB
+    }
+    
+    class "ConcreteFactory2" {
+        +createProductA(): ProductA
+        +createProductB(): ProductB
+    }
+    
+    interface "ProductA" {
+        +operationA(): void
+    }
+    
+    class "ConcreteProductA1" {
+        +operationA(): void
+    }
+    
+    class "ConcreteProductA2" {
+        +operationA(): void
+    }
+    
+    interface "ProductB" {
+        +operationB(): void
+        +collaborateWith(productA: ProductA): void
+    }
+    
+    class "ConcreteProductB1" {
+        +operationB(): void
+        +collaborateWith(productA: ProductA): void
+    }
+    
+    class "ConcreteProductB2" {
+        +operationB(): void
+        +collaborateWith(productA: ProductA): void
+    }
+    
+    class "Client" {
+        -productA: ProductA
+        -productB: ProductB
+        +Client(factory: AbstractFactory)
+        +executeOperations(): void
+    }
+    
+    class "AbstractFactoryDemo" {
+        +main(args: String[]): void
+    }
+    
+    AbstractFactory <|.. ConcreteFactory1
+    AbstractFactory <|.. ConcreteFactory2
+    
+    ProductA <|.. ConcreteProductA1
+    ProductA <|.. ConcreteProductA2
+    
+    ProductB <|.. ConcreteProductB1
+    ProductB <|.. ConcreteProductB2
+    
+    ConcreteFactory1 ..> ConcreteProductA1 : creates
+    ConcreteFactory1 ..> ConcreteProductB1 : creates
+    
+    ConcreteFactory2 ..> ConcreteProductA2 : creates
+    ConcreteFactory2 ..> ConcreteProductB2 : creates
+    
+    Client o--> ProductA
+    Client o--> ProductB
+    Client ..> AbstractFactory : uses
+    
+    AbstractFactoryDemo ..> AbstractFactory : uses
+    AbstractFactoryDemo ..> Client : creates
+    
+    ProductB ..> ProductA : uses
+}
+
+note top of Creator
+  Factory Method defines an interface for
+  creating a single object, but lets subclasses
+  decide which class to instantiate.
+end note
+
+note top of AbstractFactory
+  Abstract Factory provides an interface for
+  creating families of related or dependent objects
+  without specifying their concrete classes.
+end note
+
+note bottom of Client
+  Client works with factories and products
+  only through abstract interfaces. This
+  isolates concrete classes from the client.
+end note
+
+@enduml

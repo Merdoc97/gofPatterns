@@ -1,0 +1,70 @@
+@startuml Decorator Pattern
+
+package "ua.bot.structure.decorator" {
+    interface "Component" {
+        +operation(): String
+    }
+    
+    class "ConcreteComponent" {
+        +operation(): String
+    }
+    
+    abstract class "Decorator" {
+        #component: Component
+        +Decorator(component: Component)
+        +operation(): String
+    }
+    
+    class "ConcreteDecoratorA" {
+        +ConcreteDecoratorA(component: Component)
+        +operation(): String
+        +additionalOperation(): String
+    }
+    
+    class "ConcreteDecoratorB" {
+        +ConcreteDecoratorB(component: Component)
+        +operation(): String
+        +newFeature(): void
+    }
+    
+    class "ConcreteDecoratorC" {
+        -additionalState: String
+        +ConcreteDecoratorC(component: Component)
+        +operation(): String
+    }
+    
+    class "DecoratorPatternDemo" {
+        +main(args: String[]): void
+    }
+    
+    Component <|.. ConcreteComponent : implements
+    Component <|.. Decorator : implements
+    Decorator <|-- ConcreteDecoratorA : extends
+    Decorator <|-- ConcreteDecoratorB : extends
+    Decorator <|-- ConcreteDecoratorC : extends
+    Decorator o--> "1" Component : wraps
+    DecoratorPatternDemo ..> Component : uses
+    DecoratorPatternDemo ..> ConcreteComponent : creates
+    DecoratorPatternDemo ..> ConcreteDecoratorA : creates
+    DecoratorPatternDemo ..> ConcreteDecoratorB : creates
+    DecoratorPatternDemo ..> ConcreteDecoratorC : creates
+}
+
+note bottom of ua.bot.structure.decorator
+  The Decorator Pattern attaches additional responsibilities to objects dynamically.
+  
+  Key components:
+  - Component: Interface for objects that can have responsibilities added to them
+  - ConcreteComponent: Defines an object to which additional responsibilities can be added
+  - Decorator: Abstract class that implements Component and maintains a reference to a Component object
+  - ConcreteDecorator: Adds responsibilities to the component
+  
+  Benefits:
+  - More flexibility than static inheritance
+  - Avoids feature-laden classes high up in the hierarchy
+  - Enhances objects at runtime
+  - Allows combining behaviors by nesting decorators
+  - Follows Single Responsibility Principle
+end note
+
+@enduml

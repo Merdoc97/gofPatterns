@@ -1,0 +1,103 @@
+@startuml Chain of Responsibility Pattern
+
+package "ua.bot.behaviour.chain" {
+    ' Handler abstract class
+    abstract class "Handler" {
+        #nextHandler: Handler
+        +setNext(nextHandler: Handler): Handler
+        +{abstract} handle(request: Request): boolean
+    }
+    
+    ' Concrete Handlers
+    class "TypeAHandler" {
+        +handle(request: Request): boolean
+    }
+    
+    class "TypeBHandler" {
+        +handle(request: Request): boolean
+    }
+    
+    class "TypeCHandler" {
+        +handle(request: Request): boolean
+    }
+    
+    class "DefaultHandler" {
+        +handle(request: Request): boolean
+    }
+    
+    ' Request class
+    class "Request" {
+        -type: String
+        -content: String
+        +Request(type: String, content: String)
+        +getType(): String
+        +getContent(): String
+        +toString(): String
+    }
+    
+    ' Client
+    class "ChainPatternDemo" {
+        +main(args: String[]): void
+    }
+    
+    ' Relationships
+    Handler <|-- TypeAHandler
+    Handler <|-- TypeBHandler
+    Handler <|-- TypeCHandler
+    Handler <|-- DefaultHandler
+    
+    Handler o--> Handler : nextHandler
+    
+    TypeAHandler ..> Request : handles
+    TypeBHandler ..> Request : handles
+    TypeCHandler ..> Request : handles
+    DefaultHandler ..> Request : handles
+    
+    ChainPatternDemo ..> Handler : creates and uses
+    ChainPatternDemo ..> Request : creates
+}
+
+note top of Handler
+  The Handler defines an interface for handling requests
+  and optionally implements the successor link.
+end note
+
+note right of TypeAHandler
+  TypeAHandler handles requests of Type A
+  or passes them to the next handler.
+end note
+
+note right of TypeBHandler
+  TypeBHandler handles requests of Type B
+  or passes them to the next handler.
+end note
+
+note right of TypeCHandler
+  TypeCHandler handles requests of Type C
+  or passes them to the next handler.
+end note
+
+note right of DefaultHandler
+  DefaultHandler handles any remaining requests
+  as a fallback mechanism.
+end note
+
+note bottom of Request
+  Request encapsulates the information
+  passed along the chain of handlers.
+end note
+
+note bottom of ua.bot.behaviour.chain
+  The Chain of Responsibility Pattern creates a chain of receiver objects for a request.
+  This pattern decouples sender and receiver of a request based on the type of request.
+  
+  Key components:
+  - Handler: Abstract class defining interface for handling requests
+  - Concrete Handlers: Handle requests they're responsible for
+  - Request: Contains information passed along the chain
+  
+  Each handler decides either to process the request or pass it to the next handler.
+  The client creates and configures the chain, and submits requests to the first handler.
+end note
+
+@enduml

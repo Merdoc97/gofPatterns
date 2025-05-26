@@ -1,0 +1,71 @@
+@startuml Bridge Pattern
+
+package "ua.bot.structure.bridge" {
+    interface "Implementor" {
+        +operationImpl(): void
+    }
+    
+    class "ConcreteImplementorA" {
+        +operationImpl(): void
+    }
+    
+    class "ConcreteImplementorB" {
+        +operationImpl(): void
+    }
+    
+    abstract class "Abstraction" {
+        #implementor: Implementor
+        +Abstraction(implementor: Implementor)
+        +operation(): void
+    }
+    
+    class "RefinedAbstraction" {
+        +RefinedAbstraction(implementor: Implementor)
+        +operation(): void
+        +additionalOperation(): void
+    }
+    
+    class "BridgePatternDemo" {
+        +main(args: String[]): void
+    }
+    
+    ' Relationships
+    Implementor <|.. ConcreteImplementorA : implements
+    Implementor <|.. ConcreteImplementorB : implements
+    Abstraction o--> "1" Implementor : has >
+    Abstraction <|-- RefinedAbstraction : extends
+    BridgePatternDemo ..> Abstraction : uses
+    BridgePatternDemo ..> RefinedAbstraction : uses
+    BridgePatternDemo ..> Implementor : creates
+}
+
+note right of Abstraction
+  The Abstraction defines the interface for the "control" part of the two class hierarchies.
+  It maintains a reference to an object of the Implementation hierarchy and delegates
+  all of the real work to this object.
+end note
+
+note left of Implementor
+  The Implementor defines the interface for implementation classes. This interface
+  doesn't have to correspond exactly to Abstraction's interface; in fact the two
+  interfaces can be quite different. Typically the Implementor interface provides
+  only primitive operations, and Abstraction defines higher-level operations based
+  on these primitives.
+end note
+
+note bottom of ua.bot.structure.bridge
+  The Bridge Pattern decouples an abstraction from its implementation so that the two can vary independently.
+  
+  Key components:
+  - Abstraction: Defines the abstraction's interface and maintains a reference to an implementor
+  - RefinedAbstraction: Extends the abstraction interface with additional functionality
+  - Implementor: Defines the interface for implementation classes
+  - ConcreteImplementor: Implements the Implementor interface
+  
+  Benefits:
+  - Decouples interface from implementation
+  - Improves extensibility (can extend both hierarchies independently)
+  - Hides implementation details from clients
+end note
+
+@enduml

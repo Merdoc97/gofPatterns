@@ -1,0 +1,93 @@
+@startuml Mediator Pattern
+
+package "ua.bot.behaviour.mediator" {
+    ' Mediator interface and implementation
+    interface "Mediator" {
+        +notify(sender: Colleague, event: String): void
+    }
+    
+    class "ConcreteMediator" {
+        -colleagueA: ConcreteColleagueA
+        -colleagueB: ConcreteColleagueB
+        +setColleagueA(colleague: ConcreteColleagueA): void
+        +setColleagueB(colleague: ConcreteColleagueB): void
+        +notify(sender: Colleague, event: String): void
+    }
+    
+    ' Colleague abstract class and implementations
+    abstract class "Colleague" {
+        #mediator: Mediator
+        +Colleague(mediator: Mediator)
+    }
+    
+    class "ConcreteColleagueA" {
+        +operation(): void
+        +receiveMessage(message: String): void
+    }
+    
+    class "ConcreteColleagueB" {
+        +operation(): void
+        +receiveMessage(message: String): void
+    }
+    
+    ' Client
+    class "MediatorPatternDemo" {
+        +main(args: String[]): void
+    }
+    
+    ' Relationships
+    Mediator <|.. ConcreteMediator
+    Colleague <|-- ConcreteColleagueA
+    Colleague <|-- ConcreteColleagueB
+    
+    ConcreteMediator o--> ConcreteColleagueA
+    ConcreteMediator o--> ConcreteColleagueB
+    
+    Colleague o--> Mediator
+    
+    MediatorPatternDemo ..> ConcreteMediator : creates
+    MediatorPatternDemo ..> ConcreteColleagueA : creates
+    MediatorPatternDemo ..> ConcreteColleagueB : creates
+}
+
+note top of Mediator
+  The Mediator defines an interface for communicating with Colleague objects.
+  It centralizes complex communications and control between colleagues.
+end note
+
+note top of Colleague
+  The Colleague knows its Mediator and communicates
+  with other Colleagues through it.
+end note
+
+note bottom of ConcreteColleagueA
+  ConcreteColleagueA implements Colleague behavior
+  and notifies its mediator when events occur.
+end note
+
+note bottom of ConcreteColleagueB
+  ConcreteColleagueB implements Colleague behavior
+  and notifies its mediator when events occur.
+end note
+
+note bottom of ConcreteMediator
+  ConcreteMediator implements the Mediator interface
+  and coordinates between colleagues. It knows all
+  colleagues and manages their interactions.
+end note
+
+note bottom of ua.bot.behaviour.mediator
+  The Mediator Pattern defines an object that encapsulates how a set of objects interact.
+  It promotes loose coupling by keeping objects from referring to each other explicitly,
+  and it lets you vary their interaction independently.
+  
+  Key components:
+  - Mediator: Interface for communication between colleagues
+  - ConcreteMediator: Implements the mediator interface and coordinates colleagues
+  - Colleague: Abstract class that knows about the mediator
+  - ConcreteColleague: Implements colleague behavior and communicates via mediator
+  
+  The pattern centralizes complex communications and control logic between objects.
+end note
+
+@enduml

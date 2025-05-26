@@ -1,0 +1,94 @@
+@startuml Adapter Pattern
+
+package "ua.bot.structure.adapter" {
+    ' Target interface
+    interface "Target" {
+        +request(): String
+    }
+    
+    ' Adaptee class
+    class "Adaptee" {
+        +specificRequest(): String
+    }
+    
+    ' Object Adapter class
+    class "Adapter" {
+        -adaptee: Adaptee
+        +Adapter(adaptee: Adaptee)
+        +request(): String
+    }
+    
+    ' Class Adapter
+    class "ClassAdapter" {
+        +request(): String
+    }
+    
+    ' Client class
+    class "Client" {
+        +executeRequest(target: Target): void
+    }
+    
+    ' Demo class
+    class "AdapterPatternDemo" {
+        +main(args: String[]): void
+    }
+    
+    ' Object Adapter relationships
+    Target <|.. Adapter : implements
+    Adapter o--> Adaptee : adapts >
+    
+    ' Class Adapter relationships
+    Target <|.. ClassAdapter : implements
+    Adaptee <|-- ClassAdapter : extends
+    
+    ' Client relationships
+    Client ..> Target : uses >
+    AdapterPatternDemo ..> Client : creates
+    AdapterPatternDemo ..> Adapter : creates
+    AdapterPatternDemo ..> ClassAdapter : creates
+    AdapterPatternDemo ..> Adaptee : creates
+}
+
+note top of Target
+  The Target defines the domain-specific interface
+  that Client uses and expects.
+end note
+
+note bottom of Adaptee
+  The Adaptee contains some useful behavior,
+  but its interface is incompatible with the
+  existing client code.
+end note
+
+note right of Adapter
+  The Adapter adapts the interface of Adaptee
+  to the Target interface. This is the Object
+  Adapter implementation using composition.
+end note
+
+note right of ClassAdapter
+  The ClassAdapter adapts the interface of Adaptee
+  to the Target interface. This is the Class
+  Adapter implementation using inheritance.
+end note
+
+note top of Client
+  The Client collaborates with objects
+  conforming to the Target interface.
+end note
+
+note bottom of ua.bot.structure.adapter
+  The Adapter Pattern allows objects with incompatible interfaces to collaborate.
+  
+  Two implementations:
+  - Object Adapter: Uses composition to reference the adaptee
+  - Class Adapter: Uses inheritance by extending the adaptee and implementing the target
+  
+  Key components:
+  - Target: The interface that clients use
+  - Adaptee: The class that needs to be adapted
+  - Adapter: The class that adapts the Adaptee to the Target interface
+  - Client: Collaborates with objects conforming to the Target interface
+end note
+
+@enduml

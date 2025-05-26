@@ -1,0 +1,407 @@
+@startuml Behavioral Patterns
+
+package "ua.bot.behaviour" {
+  note "Behavioral patterns are concerned with algorithms and the assignment of responsibilities between objects.\nThey describe not just patterns of objects or classes but also the patterns of communication between them." as BehavioralPatterns
+}
+
+package "ua.bot.behaviour.strategy" {
+  interface "Strategy" {
+    +execute(): void
+  }
+  
+  class "ConcreteStrategyA" {
+    +execute(): void
+  }
+  
+  class "ConcreteStrategyB" {
+    +execute(): void
+  }
+  
+  class "Context" {
+    -strategy: Strategy
+    +setStrategy(strategy: Strategy): void
+    +executeStrategy(): void
+  }
+  
+  Strategy <|.. ConcreteStrategyA
+  Strategy <|.. ConcreteStrategyB
+  Context o--> Strategy
+
+  note bottom of Strategy
+    The Strategy pattern defines a family of algorithms,
+    encapsulates each one, and makes them interchangeable.
+    Strategy lets the algorithm vary independently from
+    clients that use it.
+  end note
+}
+
+package "ua.bot.behaviour.observer" {
+  interface "Subject" {
+    +attach(observer: Observer): void
+    +detach(observer: Observer): void
+    +notifyObservers(): void
+  }
+  
+  class "ConcreteSubject" {
+    -state: String
+    -observers: List<Observer>
+    +attach(observer: Observer): void
+    +detach(observer: Observer): void
+    +notifyObservers(): void
+    +getState(): String
+    +setState(state: String): void
+  }
+  
+  interface "Observer" {
+    +update(subject: Subject): void
+  }
+  
+  class "ConcreteObserverA" {
+    +update(subject: Subject): void
+  }
+  
+  class "ConcreteObserverB" {
+    +update(subject: Subject): void
+  }
+  
+  Subject <|.. ConcreteSubject
+  Observer <|.. ConcreteObserverA
+  Observer <|.. ConcreteObserverB
+  Subject o--> Observer
+  
+  note bottom of Subject
+    The Observer pattern defines a one-to-many dependency
+    between objects so that when one object changes state,
+    all its dependents are notified and updated automatically.
+  end note
+}
+
+package "ua.bot.behaviour.command" {
+  interface "Command" {
+    +execute(): void
+    +undo(): void
+  }
+  
+  class "ConcreteCommand" {
+    -receiver: Receiver
+    +execute(): void
+    +undo(): void
+  }
+  
+  class "Receiver" {
+    +action(): void
+    +undoAction(): void
+  }
+  
+  class "Invoker" {
+    -command: Command
+    +setCommand(command: Command): void
+    +executeCommand(): void
+    +undoCommand(): void
+  }
+  
+  class "Client" {
+  }
+  
+  Command <|.. ConcreteCommand
+  ConcreteCommand o--> Receiver
+  Invoker o--> Command
+  Client ..> ConcreteCommand
+  Client ..> Receiver
+  Client ..> Invoker
+  
+  note bottom of Command
+    The Command pattern encapsulates a request as an object,
+    thereby allowing for parameterization of clients with different requests,
+    queuing of requests, and logging of the requests.
+    It also allows for the support of undoable operations.
+  end note
+}
+
+package "ua.bot.behaviour.template" {
+  abstract class "AbstractClass" {
+    +templateMethod(): void
+    #primitiveOperation1(): void
+    #primitiveOperation2(): void
+    #hook(): void
+  }
+  
+  class "ConcreteClass" {
+    #primitiveOperation1(): void
+    #primitiveOperation2(): void
+    #hook(): void
+  }
+  
+  AbstractClass <|-- ConcreteClass
+  
+  note bottom of AbstractClass
+    The Template Method pattern defines the skeleton of an algorithm
+    in an operation, deferring some steps to subclasses.
+    Template Method lets subclasses redefine certain steps of an algorithm
+    without changing the algorithm's structure.
+  end note
+}
+
+package "ua.bot.behaviour.iterator" {
+  interface "Iterator" {
+    +hasNext(): boolean
+    +next(): Object
+  }
+  
+  class "ConcreteIterator" {
+    -collection: ConcreteAggregate
+    -position: int
+    +hasNext(): boolean
+    +next(): Object
+  }
+  
+  interface "Aggregate" {
+    +createIterator(): Iterator
+  }
+  
+  class "ConcreteAggregate" {
+    -items: Object[]
+    +createIterator(): Iterator
+    +getItem(index: int): Object
+    +getCount(): int
+  }
+  
+  Iterator <|.. ConcreteIterator
+  Aggregate <|.. ConcreteAggregate
+  ConcreteIterator o--> ConcreteAggregate
+  ConcreteAggregate ..> ConcreteIterator
+  
+  note bottom of Iterator
+    The Iterator pattern provides a way to access the elements
+    of an aggregate object sequentially without exposing its
+    underlying representation.
+  end note
+}
+
+package "ua.bot.behaviour.state" {
+  interface "State" {
+    +handle(context: Context): void
+  }
+  
+  class "ConcreteStateA" {
+    +handle(context: Context): void
+  }
+  
+  class "ConcreteStateB" {
+    +handle(context: Context): void
+  }
+  
+  class "Context" {
+    -state: State
+    +Context(initialState: State)
+    +setState(state: State): void
+    +request(): void
+  }
+  
+  State <|.. ConcreteStateA
+  State <|.. ConcreteStateB
+  Context o--> State
+  ConcreteStateA ..> Context
+  ConcreteStateB ..> Context
+  
+  note bottom of State
+    The State pattern allows an object to alter its behavior
+    when its internal state changes. The object will appear
+    to change its class.
+  end note
+}
+
+package "ua.bot.behaviour.chain" {
+  abstract class "Handler" {
+    -successor: Handler
+    +setSuccessor(successor: Handler): void
+    +handleRequest(request: Request): void
+    #processRequest(request: Request): boolean
+  }
+  
+  class "ConcreteHandlerA" {
+    #processRequest(request: Request): boolean
+  }
+  
+  class "ConcreteHandlerB" {
+    #processRequest(request: Request): boolean
+  }
+  
+  class "Request" {
+    -type: String
+    +getType(): String
+  }
+  
+  Handler <|-- ConcreteHandlerA
+  Handler <|-- ConcreteHandlerB
+  Handler o--> Handler
+  
+  note bottom of Handler
+    The Chain of Responsibility pattern avoids coupling the sender
+    of a request to its receiver by giving more than one object a
+    chance to handle the request. It chains the receiving objects
+    and passes the request along the chain until an object handles it.
+  end note
+}
+
+package "ua.bot.behaviour.mediator" {
+  interface "Mediator" {
+    +notify(sender: Colleague, event: String): void
+  }
+  
+  class "ConcreteMediator" {
+    -colleagueA: ConcreteColleagueA
+    -colleagueB: ConcreteColleagueB
+    +setColleagueA(colleague: ConcreteColleagueA): void
+    +setColleagueB(colleague: ConcreteColleagueB): void
+    +notify(sender: Colleague, event: String): void
+  }
+  
+  abstract class "Colleague" {
+    #mediator: Mediator
+    +Colleague(mediator: Mediator)
+  }
+  
+  class "ConcreteColleagueA" {
+    +operation(): void
+    +receiveMessage(message: String): void
+  }
+  
+  class "ConcreteColleagueB" {
+    +operation(): void
+    +receiveMessage(message: String): void
+  }
+  
+  Mediator <|.. ConcreteMediator
+  Colleague <|-- ConcreteColleagueA
+  Colleague <|-- ConcreteColleagueB
+  ConcreteMediator o--> ConcreteColleagueA
+  ConcreteMediator o--> ConcreteColleagueB
+  Colleague o--> Mediator
+  
+  note bottom of Mediator
+    The Mediator pattern defines an object that encapsulates
+    how a set of objects interact. It promotes loose coupling
+    by keeping objects from referring to each other explicitly.
+  end note
+}
+
+package "ua.bot.behaviour.memento" {
+  class "Originator" {
+    -state: String
+    +setState(state: String): void
+    +getState(): String
+    +saveStateToMemento(): Memento
+    +restoreStateFromMemento(memento: Memento): void
+  }
+  
+  class "Memento" {
+    -state: String
+    +Memento(state: String)
+    +getState(): String
+  }
+  
+  class "Caretaker" {
+    -mementos: List<Memento>
+    +addMemento(memento: Memento): void
+    +getMemento(index: int): Memento
+  }
+  
+  Originator ..> Memento
+  Caretaker o--> Memento
+  
+  note bottom of Memento
+    The Memento pattern captures and externalizes an object's
+    internal state so that the object can be restored to this
+    state later, without violating encapsulation.
+  end note
+}
+
+package "ua.bot.behaviour.visitor" {
+  interface "Visitor" {
+    +visitConcreteElementA(element: ConcreteElementA): void
+    +visitConcreteElementB(element: ConcreteElementB): void
+  }
+  
+  class "ConcreteVisitor" {
+    +visitConcreteElementA(element: ConcreteElementA): void
+    +visitConcreteElementB(element: ConcreteElementB): void
+  }
+  
+  interface "Element" {
+    +accept(visitor: Visitor): void
+  }
+  
+  class "ConcreteElementA" {
+    +accept(visitor: Visitor): void
+    +operationA(): void
+  }
+  
+  class "ConcreteElementB" {
+    +accept(visitor: Visitor): void
+    +operationB(): void
+  }
+  
+  class "ObjectStructure" {
+    -elements: List<Element>
+    +addElement(element: Element): void
+    +removeElement(element: Element): void
+    +accept(visitor: Visitor): void
+  }
+  
+  Visitor <|.. ConcreteVisitor
+  Element <|.. ConcreteElementA
+  Element <|.. ConcreteElementB
+  ObjectStructure o--> Element
+  Element ..> Visitor
+  
+  note bottom of Visitor
+    The Visitor pattern represents an operation to be performed
+    on the elements of an object structure. It lets you define a
+    new operation without changing the classes of the elements on
+    which it operates.
+  end note
+}
+
+package "ua.bot.behaviour.interpreter" {
+  interface "Expression" {
+    +interpret(context: Context): boolean
+  }
+  
+  class "TerminalExpression" {
+    -data: String
+    +interpret(context: Context): boolean
+  }
+  
+  class "AndExpression" {
+    -expr1: Expression
+    -expr2: Expression
+    +interpret(context: Context): boolean
+  }
+  
+  class "OrExpression" {
+    -expr1: Expression
+    -expr2: Expression
+    +interpret(context: Context): boolean
+  }
+  
+  class "Context" {
+    -input: String
+    +getInput(): String
+    +setInput(input: String): void
+  }
+  
+  Expression <|.. TerminalExpression
+  Expression <|.. AndExpression
+  Expression <|.. OrExpression
+  AndExpression o--> Expression
+  OrExpression o--> Expression
+  
+  note bottom of Expression
+    The Interpreter pattern defines a grammatical representation
+    for a language and an interpreter to interpret the grammar.
+    It is used to interpret a particular language.
+  end note
+}
+
+@enduml

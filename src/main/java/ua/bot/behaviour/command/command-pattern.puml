@@ -1,0 +1,110 @@
+@startuml Command Pattern
+
+package "ua.bot.behaviour.command" {
+    ' Command interface and implementations
+    interface "Command" {
+        +execute(): void
+        +undo(): void
+    }
+    
+    class "ConcreteCommandA" {
+        -receiver: Receiver
+        +ConcreteCommandA(receiver: Receiver)
+        +execute(): void
+        +undo(): void
+    }
+    
+    class "ConcreteCommandB" {
+        -receiver: Receiver
+        +ConcreteCommandB(receiver: Receiver)
+        +execute(): void
+        +undo(): void
+    }
+    
+    class "ConcreteCommandC" {
+        -receiver: Receiver
+        +ConcreteCommandC(receiver: Receiver)
+        +execute(): void
+        +undo(): void
+    }
+    
+    ' Receiver
+    class "Receiver" {
+        +actionA(): void
+        +actionB(): void
+        +actionC(): void
+    }
+    
+    ' Invoker
+    class "Invoker" {
+        -command: Command
+        -history: List<Command>
+        +setCommand(command: Command): void
+        +executeCommand(): void
+        +undoLastCommand(): void
+        +getHistory(): List<Command>
+    }
+    
+    ' Client
+    class "CommandPatternDemo" {
+        +main(args: String[]): void
+    }
+    
+    ' Relationships
+    Command <|.. ConcreteCommandA
+    Command <|.. ConcreteCommandB
+    Command <|.. ConcreteCommandC
+    
+    ConcreteCommandA o--> Receiver
+    ConcreteCommandB o--> Receiver
+    ConcreteCommandC o--> Receiver
+    
+    Invoker o--> Command
+    Invoker o--> "0..*" Command : history
+    
+    CommandPatternDemo ..> Receiver : creates
+    CommandPatternDemo ..> ConcreteCommandA : creates
+    CommandPatternDemo ..> ConcreteCommandB : creates
+    CommandPatternDemo ..> ConcreteCommandC : creates
+    CommandPatternDemo ..> Invoker : creates and uses
+}
+
+note top of Command
+  The Command interface declares the execute method
+  that all concrete commands must implement, and an
+  optional undo method for reversible operations.
+end note
+
+note right of Receiver
+  The Receiver knows how to perform the operations
+  associated with carrying out a request. It contains
+  the actual business logic.
+end note
+
+note left of Invoker
+  The Invoker is responsible for initiating requests.
+  It holds a command and at some point asks the
+  command to execute the request. It also maintains
+  a history of executed commands.
+end note
+
+note bottom of ConcreteCommandA
+  ConcreteCommandA implements the Command interface
+  and defines the binding between a Receiver and an action.
+  It delegates the work to the Receiver.
+end note
+
+note bottom of ua.bot.behaviour.command
+  The Command Pattern encapsulates a request as an object, allowing parameterization
+  of clients with different requests, queuing of requests, and supporting undoable operations.
+  
+  Key components:
+  - Command: Interface defining execute and undo methods
+  - ConcreteCommand: Implements Command interface, binding Receiver with action
+  - Receiver: Knows how to perform the actual operations
+  - Invoker: Asks command to execute the request
+  
+  The pattern decouples the object that invokes the operation from the one that knows how to perform it.
+end note
+
+@enduml

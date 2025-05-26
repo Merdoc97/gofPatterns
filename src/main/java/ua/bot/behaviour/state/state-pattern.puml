@@ -1,0 +1,97 @@
+@startuml State Pattern
+
+package "ua.bot.behaviour.state" {
+    ' State interface and implementations
+    interface "State" {
+        +handle(context: Context): void
+        +getName(): String
+    }
+    
+    class "ConcreteStateA" {
+        +handle(context: Context): void
+        +getName(): String
+    }
+    
+    class "ConcreteStateB" {
+        +handle(context: Context): void
+        +getName(): String
+    }
+    
+    class "ConcreteStateC" {
+        +handle(context: Context): void
+        +getName(): String
+    }
+    
+    ' Context class
+    class "Context" {
+        -state: State
+        +Context(initialState: State)
+        +setState(state: State): void
+        +getState(): State
+        +request(): void
+    }
+    
+    ' Client
+    class "StatePatternDemo" {
+        +main(args: String[]): void
+    }
+    
+    ' Relationships
+    State <|.. ConcreteStateA
+    State <|.. ConcreteStateB
+    State <|.. ConcreteStateC
+    
+    Context o--> State : -state
+    
+    ConcreteStateA ..> Context : modifies
+    ConcreteStateB ..> Context : modifies
+    ConcreteStateC ..> Context : modifies
+    
+    ConcreteStateA ..> ConcreteStateB : creates
+    ConcreteStateB ..> ConcreteStateC : creates
+    ConcreteStateC ..> ConcreteStateA : creates
+    
+    StatePatternDemo ..> Context : creates and uses
+    StatePatternDemo ..> ConcreteStateA : creates initial state
+}
+
+note top of State
+  The State interface defines the operations that all
+  concrete states must implement. These operations are
+  the actions that the context may request.
+end note
+
+note right of Context
+  The Context maintains a reference to the current state
+  object and delegates state-specific behavior to it.
+  When the context's state changes, its behavior changes too.
+end note
+
+note bottom of ConcreteStateA
+  ConcreteStateA provides the implementation for
+  State A behavior and transitions to State B.
+end note
+
+note bottom of ConcreteStateB
+  ConcreteStateB provides the implementation for
+  State B behavior and transitions to State C.
+end note
+
+note bottom of ConcreteStateC
+  ConcreteStateC provides the implementation for
+  State C behavior and transitions back to State A.
+end note
+
+note bottom of ua.bot.behaviour.state
+  The State Pattern allows an object to alter its behavior when its internal state changes.
+  The object will appear to change its class.
+  
+  Key components:
+  - State: Interface defining state-specific behavior
+  - ConcreteState: Implementations for each state's behavior
+  - Context: Maintains current state and delegates behavior to it
+  
+  The pattern localizes state-specific behavior in separate classes and makes state transitions explicit.
+end note
+
+@enduml

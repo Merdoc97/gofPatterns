@@ -1,0 +1,72 @@
+@startuml Template Method Pattern
+
+package "ua.bot.behaviour.template" {
+    ' Abstract class with template method
+    abstract class "AbstractClass" {
+        +{final} templateMethod(): void
+        #{abstract} step1(): void
+        #{abstract} step2(): void
+        #step3(): void
+        #{abstract} step4(): void
+        #hook(): void
+    }
+    
+    ' Concrete implementations
+    class "ConcreteClassA" {
+        #step1(): void
+        #step2(): void
+        #step4(): void
+        #hook(): void
+    }
+    
+    class "ConcreteClassB" {
+        #step1(): void
+        #step2(): void
+        #step4(): void
+    }
+    
+    ' Client
+    class "TemplateMethodPatternDemo" {
+        +main(args: String[]): void
+    }
+    
+    ' Relationships
+    AbstractClass <|-- ConcreteClassA
+    AbstractClass <|-- ConcreteClassB
+    
+    TemplateMethodPatternDemo ..> AbstractClass : uses
+    TemplateMethodPatternDemo ..> ConcreteClassA : creates
+    TemplateMethodPatternDemo ..> ConcreteClassB : creates
+}
+
+note top of AbstractClass
+  The AbstractClass contains the template method that defines
+  the algorithm's skeleton. It declares abstract primitive operations
+  that concrete subclasses must implement, and may provide default
+  implementations for hook methods.
+end note
+
+note right of ConcreteClassA
+  ConcreteClassA implements all the abstract operations and
+  overrides the hook method to provide specific behavior.
+end note
+
+note right of ConcreteClassB
+  ConcreteClassB implements all the abstract operations but
+  uses the default hook method implementation from AbstractClass.
+end note
+
+note bottom of ua.bot.behaviour.template
+  The Template Method Pattern defines the skeleton of an algorithm in a method,
+  deferring some steps to subclasses. It lets subclasses redefine certain steps
+  of an algorithm without changing the algorithm's structure.
+  
+  Key components:
+  - AbstractClass: Defines abstract primitive operations and a template method
+  - ConcreteClass: Implements the primitive operations required by the template method
+  
+  The pattern uses the "Hollywood Principle": "Don't call us, we'll call you."
+  The AbstractClass calls the operations of a ConcreteClass, not the other way around.
+end note
+
+@enduml

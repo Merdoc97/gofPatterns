@@ -1,0 +1,73 @@
+@startuml Memento Pattern
+
+package "ua.bot.behaviour.memento" {
+    ' Originator class
+    class "Originator" {
+        -state: String
+        +setState(state: String): void
+        +getState(): String
+        +saveStateToMemento(): Memento
+        +restoreStateFromMemento(memento: Memento): void
+    }
+    
+    ' Memento class
+    class "Memento" {
+        -state: String {final}
+        +Memento(state: String)
+        #getState(): String
+    }
+    
+    ' Caretaker class
+    class "Caretaker" {
+        -mementos: List<Memento>
+        +addMemento(memento: Memento): void
+        +getMemento(index: int): Memento
+        +getMementoCount(): int
+    }
+    
+    ' Client
+    class "MementoPatternDemo" {
+        +main(args: String[]): void
+    }
+    
+    ' Relationships
+    Originator ..> Memento : creates >
+    Originator ..> Memento : uses <
+    Caretaker o--> "0..*" Memento : stores
+    MementoPatternDemo ..> Originator : uses
+    MementoPatternDemo ..> Caretaker : uses
+}
+
+note top of Originator
+  The Originator creates a memento containing a
+  snapshot of its current internal state and uses
+  the memento to restore its internal state.
+end note
+
+note bottom of Memento
+  The Memento stores the internal state of the
+  Originator object. The memento protects against
+  access by objects other than the originator.
+end note
+
+note bottom of Caretaker
+  The Caretaker is responsible for the memento's
+  safekeeping and never operates on or examines
+  the contents of a memento.
+end note
+
+note bottom of ua.bot.behaviour.memento
+  The Memento Pattern captures and externalizes an object's internal state
+  so that the object can be restored to this state later, without
+  violating encapsulation.
+  
+  Key components:
+  - Originator: Creates and restores from mementos
+  - Memento: Stores the internal state of the Originator
+  - Caretaker: Keeps track of multiple mementos
+  
+  The pattern preserves encapsulation boundaries and prevents exposing the
+  originator's internal state to other objects.
+end note
+
+@enduml

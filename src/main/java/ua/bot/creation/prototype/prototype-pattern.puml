@@ -1,0 +1,76 @@
+@startuml Prototype Pattern
+
+package "ua.bot.creation.prototype" {
+    interface "Prototype" {
+        +clone(): Prototype
+    }
+    
+    class "ConcretePrototype1" {
+        -field1: String
+        +ConcretePrototype1(field1: String)
+        +ConcretePrototype1(source: ConcretePrototype1)
+        +clone(): Prototype
+        +getField1(): String
+        +setField1(field1: String): void
+    }
+    
+    class "ConcretePrototype2" {
+        -field2: int
+        +ConcretePrototype2(field2: int)
+        +ConcretePrototype2(source: ConcretePrototype2)
+        +clone(): Prototype
+        +getField2(): int
+        +setField2(field2: int): void
+    }
+    
+    class "PrototypeRegistry" {
+        -prototypes: Map<String, Prototype>
+        +addPrototype(key: String, prototype: Prototype): void
+        +getPrototype(key: String): Prototype
+        +clonePrototype(key: String): Prototype
+    }
+    
+    class "Client" {
+        +main(args: String[]): void
+    }
+    
+    Prototype <|.. ConcretePrototype1 : implements
+    Prototype <|.. ConcretePrototype2 : implements
+    PrototypeRegistry o--> "0..*" Prototype : contains
+    Client ..> Prototype : uses
+    Client ..> ConcretePrototype1 : uses
+    Client ..> ConcretePrototype2 : uses
+    Client ..> PrototypeRegistry : uses
+}
+
+note top of Prototype
+  The Prototype interface declares the cloning method.
+  All concrete prototypes must implement this interface.
+end note
+
+note right of ConcretePrototype1
+  ConcretePrototype1 implements the clone method
+  to create a copy of itself. It contains specific
+  fields and their copying logic.
+end note
+
+note right of ConcretePrototype2
+  ConcretePrototype2 implements the clone method
+  to create a copy of itself. It contains different
+  fields than ConcretePrototype1.
+end note
+
+note bottom of PrototypeRegistry
+  The PrototypeRegistry is a container for storing
+  prototype instances. It provides a way to access
+  and retrieve prototypes by name.
+end note
+
+note bottom of Client
+  The Client creates new objects by asking
+  a prototype to clone itself. The client
+  can also use the PrototypeRegistry to
+  manage prototypes.
+end note
+
+@enduml

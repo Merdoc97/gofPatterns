@@ -1,0 +1,85 @@
+@startuml Iterator Pattern
+
+package "ua.bot.behaviour.iterator" {
+    ' Iterator interface and implementation
+    interface "Iterator<T>" {
+        +hasNext(): boolean
+        +next(): T
+        +getCurrentIndex(): int
+    }
+    
+    class "ConcreteIterator<T>" {
+        -aggregate: ConcreteAggregate<T>
+        -currentIndex: int
+        +ConcreteIterator(aggregate: ConcreteAggregate<T>)
+        +hasNext(): boolean
+        +next(): T
+        +getCurrentIndex(): int
+    }
+    
+    ' Aggregate interface and implementation
+    interface "Aggregate<T>" {
+        +createIterator(): Iterator<T>
+    }
+    
+    class "ConcreteAggregate<T>" {
+        -items: List<T>
+        +ConcreteAggregate()
+        +addItem(item: T): void
+        +getItem(index: int): T
+        +getCount(): int
+        +createIterator(): Iterator<T>
+    }
+    
+    ' Client
+    class "IteratorPatternDemo" {
+        +main(args: String[]): void
+    }
+    
+    ' Relationships
+    Iterator <|.. ConcreteIterator
+    Aggregate <|.. ConcreteAggregate
+    
+    ConcreteIterator o--> ConcreteAggregate : -aggregate
+    ConcreteAggregate ..> ConcreteIterator : creates
+    
+    IteratorPatternDemo ..> ConcreteAggregate : uses
+    IteratorPatternDemo ..> Iterator : uses
+}
+
+note top of Iterator
+  The Iterator interface defines methods for traversing
+  a collection of elements sequentially.
+end note
+
+note top of Aggregate
+  The Aggregate interface declares a method for creating
+  an Iterator object that can traverse its elements.
+end note
+
+note bottom of ConcreteIterator
+  The ConcreteIterator implements the Iterator interface
+  and keeps track of the current position in the traversal.
+end note
+
+note bottom of ConcreteAggregate
+  The ConcreteAggregate implements the Aggregate interface
+  and returns an instance of the ConcreteIterator when
+  createIterator() is called.
+end note
+
+note bottom of ua.bot.behaviour.iterator
+  The Iterator Pattern provides a way to access the elements of an aggregate object
+  sequentially without exposing its underlying representation.
+  
+  Key components:
+  - Iterator: Interface defining traversal operations
+  - ConcreteIterator: Implements the Iterator interface
+  - Aggregate: Interface defining createIterator() method
+  - ConcreteAggregate: Implements the Aggregate interface
+  
+  The pattern separates the traversal algorithm from the collection being traversed,
+  allowing for different traversal methods without changing the collection.
+end note
+
+@enduml

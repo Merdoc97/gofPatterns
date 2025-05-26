@@ -1,0 +1,88 @@
+@startuml Strategy Pattern
+
+package "ua.bot.behaviour.strategy" {
+    ' Strategy interface and implementations
+    interface "Strategy" {
+        +execute(data: String): String
+    }
+    
+    class "ConcreteStrategyA" {
+        +execute(data: String): String
+    }
+    
+    class "ConcreteStrategyB" {
+        +execute(data: String): String
+    }
+    
+    class "ConcreteStrategyC" {
+        +execute(data: String): String
+    }
+    
+    ' Context
+    class "Context" {
+        -strategy: Strategy
+        +Context(strategy: Strategy)
+        +setStrategy(strategy: Strategy): void
+        +executeStrategy(data: String): String
+    }
+    
+    ' Client
+    class "StrategyPatternDemo" {
+        +main(args: String[]): void
+    }
+    
+    ' Relationships
+    Strategy <|.. ConcreteStrategyA
+    Strategy <|.. ConcreteStrategyB
+    Strategy <|.. ConcreteStrategyC
+    
+    Context o--> Strategy
+    
+    StrategyPatternDemo ..> Context : creates
+    StrategyPatternDemo ..> ConcreteStrategyA : creates
+    StrategyPatternDemo ..> ConcreteStrategyB : creates
+    StrategyPatternDemo ..> ConcreteStrategyC : creates
+}
+
+note top of Strategy
+  The Strategy interface declares operations common to all
+  supported algorithms. Context uses this interface to call
+  the algorithm defined by a ConcreteStrategy.
+end note
+
+note right of Context
+  The Context maintains a reference to a Strategy object
+  and delegates algorithm execution to it. The Context
+  is configured with a ConcreteStrategy object.
+end note
+
+note bottom of ConcreteStrategyA
+  ConcreteStrategyA implements the algorithm using the
+  Strategy interface. This one converts text to uppercase.
+end note
+
+note bottom of ConcreteStrategyB
+  ConcreteStrategyB implements the algorithm using the
+  Strategy interface. This one converts text to lowercase.
+end note
+
+note bottom of ConcreteStrategyC
+  ConcreteStrategyC implements the algorithm using the
+  Strategy interface. This one reverses the text.
+end note
+
+note bottom of ua.bot.behaviour.strategy
+  The Strategy Pattern defines a family of algorithms, encapsulates each one,
+  and makes them interchangeable. Strategy lets the algorithm vary independently
+  from clients that use it.
+  
+  Key components:
+  - Strategy: Common interface for all concrete strategies
+  - ConcreteStrategy: Implements the algorithm using the Strategy interface
+  - Context: Uses a Strategy to execute an algorithm
+  
+  The pattern enables selecting an algorithm at runtime by encapsulating
+  each algorithm and making them interchangeable within the Context.
+end note
+
+@enduml

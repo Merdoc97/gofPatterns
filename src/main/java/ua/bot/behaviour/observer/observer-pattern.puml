@@ -1,0 +1,100 @@
+@startuml Observer Pattern
+
+package "ua.bot.behaviour.observer" {
+    ' Subject interface and implementation
+    interface "Subject" {
+        +attach(observer: Observer): void
+        +detach(observer: Observer): void
+        +notifyObservers(): void
+    }
+    
+    class "ConcreteSubject" {
+        -observers: List<Observer>
+        -state: String
+        +attach(observer: Observer): void
+        +detach(observer: Observer): void
+        +notifyObservers(): void
+        +getState(): String
+        +setState(state: String): void
+    }
+    
+    ' Observer interface and implementations
+    interface "Observer" {
+        +update(subject: Subject): void
+        +getName(): String
+    }
+    
+    class "ConcreteObserverA" {
+        -observerState: String
+        -name: String
+        +ConcreteObserverA(name: String)
+        +update(subject: Subject): void
+        +getName(): String
+        +getObserverState(): String
+    }
+    
+    class "ConcreteObserverB" {
+        -observerState: String
+        -name: String
+        +ConcreteObserverB(name: String)
+        +update(subject: Subject): void
+        +getName(): String
+        +getObserverState(): String
+    }
+    
+    ' Client
+    class "ObserverPatternDemo" {
+        +main(args: String[]): void
+    }
+    
+    ' Relationships
+    Subject <|.. ConcreteSubject
+    Observer <|.. ConcreteObserverA
+    Observer <|.. ConcreteObserverB
+    
+    ConcreteSubject o--> "0..*" Observer : -observers
+    Observer ..> Subject : update(subject)
+    
+    ObserverPatternDemo ..> ConcreteSubject : creates
+    ObserverPatternDemo ..> ConcreteObserverA : creates
+    ObserverPatternDemo ..> ConcreteObserverB : creates
+}
+
+note top of Subject
+  The Subject interface defines methods for attaching,
+  detaching, and notifying observers when a state change occurs.
+end note
+
+note top of Observer
+  The Observer interface declares the update method that's called
+  when the subject's state changes. It provides a uniform interface
+  for all concrete observers.
+end note
+
+note right of ConcreteSubject
+  ConcreteSubject maintains a list of observers and
+  notifies them when its state changes. It implements
+  methods to get and set its state.
+end note
+
+note right of ConcreteObserverA
+  ConcreteObserverA implements the Observer interface
+  and maintains a reference to its state, which is
+  updated when the subject changes.
+end note
+
+note bottom of ua.bot.behaviour.observer
+  The Observer Pattern defines a one-to-many dependency between objects so that
+  when one object changes state, all its dependents are notified and updated automatically.
+  
+  Key components:
+  - Subject: Interface defining methods to attach/detach observers and notify them
+  - ConcreteSubject: Maintains state and notifies observers of changes
+  - Observer: Interface declaring the update method called when subject changes
+  - ConcreteObserver: Implements update method to respond to subject changes
+  
+  The pattern enables loose coupling between subjects and observers, as they can interact
+  without having detailed knowledge of each other beyond the interfaces.
+end note
+
+@enduml

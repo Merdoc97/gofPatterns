@@ -1,0 +1,86 @@
+@startuml Composite Pattern
+
+package "ua.bot.structure.composite" {
+    interface "Component" {
+        +operation(): void
+        +add(component: Component): void
+        +remove(component: Component): void
+        +getChild(index: int): Component
+        +getDisplayName(): String
+    }
+    
+    class "Leaf" {
+        -name: String
+        +Leaf(name: String)
+        +operation(): void
+        +getDisplayName(): String
+    }
+    
+    class "Composite" {
+        -name: String
+        -children: List<Component>
+        +Composite(name: String)
+        +operation(): void
+        +add(component: Component): void
+        +remove(component: Component): void
+        +getChild(index: int): Component
+        +getDisplayName(): String
+        +getChildCount(): int
+        +displayStructure(indent: String): void
+    }
+    
+    class "FileSystemLeaf" {
+        -name: String
+        -sizeInKB: int
+        +FileSystemLeaf(name: String, sizeInKB: int)
+        +operation(): void
+        +getDisplayName(): String
+        +getSizeInKB(): int
+    }
+    
+    class "FileSystemComposite" {
+        -name: String
+        -children: List<Component>
+        +FileSystemComposite(name: String)
+        +operation(): void
+        +add(component: Component): void
+        +remove(component: Component): void
+        +getChild(index: int): Component
+        +getDisplayName(): String
+        +calculateSize(): int
+        +displayStructure(indent: String): void
+    }
+    
+    class "CompositePatternDemo" {
+        +main(args: String[]): void
+    }
+    
+    Component <|.. Leaf : implements
+    Component <|.. Composite : implements
+    Component <|.. FileSystemLeaf : implements
+    Component <|.. FileSystemComposite : implements
+    Composite o--> "0..*" Component : contains
+    FileSystemComposite o--> "0..*" Component : contains
+    CompositePatternDemo ..> Component : uses
+    CompositePatternDemo ..> Leaf : creates
+    CompositePatternDemo ..> Composite : creates
+    CompositePatternDemo ..> FileSystemLeaf : creates
+    CompositePatternDemo ..> FileSystemComposite : creates
+}
+
+note bottom of ua.bot.structure.composite
+  The Composite Pattern composes objects into tree structures to represent part-whole hierarchies.
+  
+  Key components:
+  - Component: Interface for all objects in the composition (both leaves and composites)
+  - Leaf: Represents end objects of a composition that have no children
+  - Composite: Represents complex components that may have children
+  
+  Benefits:
+  - Defines class hierarchies consisting of primitive and complex objects
+  - Makes it easy to add new types of components
+  - Provides flexibility of structure with manageable complexity
+  - Simplifies client code by allowing uniform treatment of objects
+end note
+
+@enduml

@@ -1,0 +1,108 @@
+@startuml Interpreter Pattern
+
+package "ua.bot.behaviour.interpreter" {
+    ' Expression interface
+    interface "Expression" {
+        +interpret(context: Context): boolean
+    }
+    
+    ' Terminal Expression
+    class "TerminalExpression" {
+        -variable: String
+        +TerminalExpression(variable: String)
+        +interpret(context: Context): boolean
+    }
+    
+    ' Non-terminal Expressions
+    class "AndExpression" {
+        -expr1: Expression
+        -expr2: Expression
+        +AndExpression(expr1: Expression, expr2: Expression)
+        +interpret(context: Context): boolean
+    }
+    
+    class "OrExpression" {
+        -expr1: Expression
+        -expr2: Expression
+        +OrExpression(expr1: Expression, expr2: Expression)
+        +interpret(context: Context): boolean
+    }
+    
+    class "NotExpression" {
+        -expr: Expression
+        +NotExpression(expr: Expression)
+        +interpret(context: Context): boolean
+    }
+    
+    ' Context
+    class "Context" {
+        -variables: Map<String, Boolean>
+        +setVariable(variable: String, value: boolean): void
+        +getVariable(variable: String): boolean
+    }
+    
+    ' Client
+    class "InterpreterPatternDemo" {
+        +main(args: String[]): void
+    }
+    
+    ' Relationships
+    Expression <|.. TerminalExpression
+    Expression <|.. AndExpression
+    Expression <|.. OrExpression
+    Expression <|.. NotExpression
+    
+    AndExpression o--> "2" Expression : contains
+    OrExpression o--> "2" Expression : contains
+    NotExpression o--> "1" Expression : contains
+    
+    InterpreterPatternDemo ..> Expression : creates and uses
+    InterpreterPatternDemo ..> Context : creates and uses
+    
+    Expression ..> Context : uses
+}
+
+note top of Expression
+  The Expression interface declares the interpret method
+  that all concrete expressions must implement.
+end note
+
+note bottom of TerminalExpression
+  TerminalExpression is a leaf node in the expression tree.
+  It represents a variable in the grammar.
+end note
+
+note right of AndExpression
+  AndExpression is a non-terminal expression that represents
+  the logical AND operation between two expressions.
+end note
+
+note right of OrExpression
+  OrExpression is a non-terminal expression that represents
+  the logical OR operation between two expressions.
+end note
+
+note right of NotExpression
+  NotExpression is a non-terminal expression that represents
+  the logical NOT operation on an expression.
+end note
+
+note bottom of Context
+  Context contains information that will be interpreted.
+  It provides a way to represent variables and their values.
+end note
+
+note bottom of ua.bot.behaviour.interpreter
+  The Interpreter Pattern defines a grammatical representation for a language
+  and provides an interpreter to interpret sentences in the language.
+  
+  Key components:
+  - Expression: The interface that defines the interpret method
+  - TerminalExpression: Leaf nodes that implement the Expression interface
+  - Non-terminal Expressions: Composite nodes that contain other expressions
+  - Context: Contains information to be interpreted
+  
+  The pattern is used to evaluate language grammar or expressions.
+end note
+
+@enduml

@@ -1,0 +1,63 @@
+@startuml Facade Pattern
+
+package "ua.bot.structure.facade" {
+    class "Facade" {
+        -subsystemA: SubsystemA
+        -subsystemB: SubsystemB
+        -subsystemC: SubsystemC
+        +Facade()
+        +startSystem()
+        +processData(data: String): String
+        +stopSystem()
+    }
+    
+    class "SubsystemA" {
+        +operationA()
+        +initialize()
+        +shutdown()
+    }
+    
+    class "SubsystemB" {
+        +operationB()
+        +prepareData(data: String): String
+        +processData(data: String)
+    }
+    
+    class "SubsystemC" {
+        +operationC()
+        +validateResult(result: String): boolean
+        +generateReport(): String
+    }
+    
+    class "FacadePatternDemo" {
+        +main(args: String[])
+    }
+    
+    Facade o--> SubsystemA : uses
+    Facade o--> SubsystemB : uses
+    Facade o--> SubsystemC : uses
+    FacadePatternDemo ..> Facade : uses
+    
+    note right of Facade
+      The Facade provides a simple interface
+      to the complex subsystem, hiding its
+      complexity from clients.
+    end note
+}
+
+note bottom of ua.bot.structure.facade
+  The Facade Pattern provides a unified interface to a set of interfaces in a subsystem.
+  
+  Key components:
+  - Facade: Provides simplified methods required by client and delegates to appropriate subsystem objects
+  - Subsystems: Implement specialized functionality and are not aware of the facade
+  - Client: Uses the facade instead of accessing the subsystem objects directly
+  
+  Benefits:
+  - Simplifies the interface to a complex subsystem
+  - Decouples the client from the subsystem
+  - Promotes loose coupling between subsystems and clients
+  - Provides a context-specific interface to a more general facility
+end note
+
+@enduml

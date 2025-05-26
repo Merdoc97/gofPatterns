@@ -1,0 +1,89 @@
+@startuml Builder Pattern
+
+package "ua.bot.creation.builder" {
+    class "Product" {
+        -parts: List<String>
+        +add(part: String): void
+        +showParts(): void
+        +getParts(): List<String>
+    }
+    
+    interface "Builder" {
+        +reset(): void
+        +buildPartA(): void
+        +buildPartB(): void
+        +buildPartC(): void
+        +getResult(): Product
+    }
+    
+    class "ConcreteBuilder1" {
+        -product: Product
+        +reset(): void
+        +buildPartA(): void
+        +buildPartB(): void
+        +buildPartC(): void
+        +getResult(): Product
+    }
+    
+    class "ConcreteBuilder2" {
+        -product: Product
+        +reset(): void
+        +buildPartA(): void
+        +buildPartB(): void
+        +buildPartC(): void
+        +getResult(): Product
+    }
+    
+    class "Director" {
+        -builder: Builder
+        +setBuilder(builder: Builder): void
+        +getBuilder(): Builder
+        +buildMinimalViableProduct(): void
+        +buildFullFeaturedProduct(): void
+        +buildCustomProduct(): void
+    }
+    
+    class "Client" {
+        +main(args: String[]): void
+    }
+    
+    Builder <|.. ConcreteBuilder1 : implements
+    Builder <|.. ConcreteBuilder2 : implements
+    ConcreteBuilder1 ..> Product : creates
+    ConcreteBuilder2 ..> Product : creates
+    Director o--> Builder : uses
+    Client ..> Director : uses
+    Client ..> Builder : uses
+    Client ..> Product : uses
+}
+
+note top of Builder
+  The Builder interface defines all possible
+  construction steps to create a product.
+end note
+
+note bottom of Product
+  Product is the complex object being built.
+  Different builders can create different
+  representations of this product.
+end note
+
+note right of ConcreteBuilder1
+  ConcreteBuilder1 provides a specific
+  implementation of the Builder interface.
+  It tracks the product being created and
+  implements the building steps.
+end note
+
+note right of ConcreteBuilder2
+  ConcreteBuilder2 provides another specific
+  implementation of the Builder interface.
+  It creates and assembles parts differently.
+end note
+
+note top of Director
+  The Director defines the order of building steps.
+  It works with any builder that follows the interface.
+end note
+
+@enduml

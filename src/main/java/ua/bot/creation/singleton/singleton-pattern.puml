@@ -1,0 +1,66 @@
+@startuml Singleton Pattern
+
+package "ua.bot.creation.singleton" {
+    class "LazySingleton" {
+        -instance: LazySingleton {static}
+        -LazySingleton()
+        +getInstance(): LazySingleton {static}
+        +operation(): void
+    }
+    
+    class "ThreadSafeSingleton" {
+        -instance: ThreadSafeSingleton {static, volatile}
+        -ThreadSafeSingleton()
+        +getInstance(): ThreadSafeSingleton {static}
+        +operation(): void
+    }
+    
+    class "EagerSingleton" {
+        -INSTANCE: EagerSingleton {static, final}
+        -EagerSingleton()
+        +getInstance(): EagerSingleton {static}
+        +operation(): void
+    }
+    
+    enum "EnumSingleton" {
+        INSTANCE
+        +operation(): void
+    }
+    
+    class "SingletonDemo" {
+        +main(args: String[]): void
+    }
+    
+    LazySingleton <.. SingletonDemo : uses
+    ThreadSafeSingleton <.. SingletonDemo : uses
+    EagerSingleton <.. SingletonDemo : uses
+    EnumSingleton <.. SingletonDemo : uses
+}
+
+note top of LazySingleton
+  Lazy Singleton creates the instance
+  only when getInstance() is first called.
+  Not thread-safe.
+end note
+
+note top of ThreadSafeSingleton
+  Thread-Safe Singleton uses double-checked
+  locking to ensure thread safety while
+  maintaining lazy initialization.
+end note
+
+note top of EagerSingleton
+  Eager Singleton creates the instance
+  when the class is loaded. Thread-safe
+  by default but may create unnecessary
+  instances.
+end note
+
+note top of EnumSingleton
+  Enum Singleton is the simplest and most
+  effective way to implement a Singleton
+  in Java. It provides serialization safety
+  and thread safety by default.
+end note
+
+@enduml
